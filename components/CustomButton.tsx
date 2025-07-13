@@ -5,7 +5,7 @@ type CustomBtnProps = {
   btnType?: "submit" | "button";
   styles?: string;
   iconSrc?: string;
-  handleClick: React.MouseEventHandler<HTMLButtonElement>;
+  handleClick?: React.MouseEventHandler<HTMLButtonElement>;
   isLoading?: boolean;
 };
 const CustomButton = ({
@@ -19,7 +19,7 @@ const CustomButton = ({
   return (
     <button
       type={btnType || "button"}
-      onClick={handleClick}
+      // onClick={handleClick}
       disabled={isLoading}
       className={`flex items-center justify-center     py-2 ${styles}`}
     >

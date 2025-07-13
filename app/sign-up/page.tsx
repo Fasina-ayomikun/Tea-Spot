@@ -5,6 +5,7 @@ import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -31,13 +32,23 @@ const SignUp = () => {
       const json = await response.json();
 
       if (response.ok) {
+        if (window) {
+          window.localStorage.setItem("TEA_TOKEN", JSON.stringify(json.token));
+          window.localStorage.setItem("TEA_USER", JSON.stringify(json.user));
+        }
+        toast.success(json.message);
         router.push("/");
       } else {
-        setErrorMessage(json.message || "Registration failed");
+        throw new Error(json.message);
       }
-    } catch (error) {
-      setErrorMessage("Something went wrong");
+    } catch (error: unknown) {
       console.log(error);
+
+      if (error instanceof Error) {
+        toast.warn(error.message);
+      } else {
+        toast.warn("An unexpected error occurred");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -58,8 +69,8 @@ const SignUp = () => {
       </section>
       <section className='w-full h-full max-w-lg px-10 pt-10'>
         <form onSubmit={handleSubmit}>
-          <h3 className='font-mono capitalize font-semibold text-4xl text-center mb-10 text-pink-700'>
-            Welcome to the Tea Spot
+          <h3 className='font-dancing-script capitalize font-semibold text-4xl text-center mb-10 text-purple-900'>
+            ✨ New here? Time to spill some drama ✨{" "}
           </h3>
 
           <CustomInput
@@ -94,13 +105,13 @@ const SignUp = () => {
             text='Sign Up'
             handleClick={() => {}}
             btnType='submit'
-            styles='w-full mt-5 rounded-md bg-pink-700 text-white'
+            styles='w-full mt-5 rounded-md bg-purple-900 text-white'
           />
         </form>
 
         <p className='text-center text-sm mt-6'>
           Already have an account?{" "}
-          <Link href='/signin' className='text-pink-700'>
+          <Link href='/signin' className='text-purple-900'>
             Log in
           </Link>
         </p>

@@ -5,19 +5,17 @@ import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
-const SignUp = () => {
+const SignIn = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrorMessage("");
 
     try {
       const response = await fetch("/api/auth/login", {
@@ -29,29 +27,29 @@ const SignUp = () => {
       });
 
       const json = await response.json();
-      console.log(json);
-
       if (response.ok) {
-        if (window) {
-          window.localStorage.setItem("TEA_TOKEN", JSON.stringify(json.token));
-        }
+        window.localStorage.setItem("TEA_TOKEN", JSON.stringify(json.token));
+        window.localStorage.setItem("TEA_USER", JSON.stringify(json.user));
+        toast.success(json.message || "You're in, bestie ☕");
         router.push("/");
       } else {
-        setErrorMessage(json.message || "login failed");
+        throw new Error(json.message);
       }
-    } catch (error) {
-      setErrorMessage("Something went wrong");
-      console.log(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.warn(error.message);
+      } else {
+        toast.warn("Something's off... try again, bestie.");
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <section className=' grid grid-cols-1 md:grid-cols-3 gap-10 justify-center items-center w-full h-dvh '>
-      <section className='relative w-full h-full hidden md:block'>
-        <div className='absolute top-0 bottom-o w-full h-full bg-black/40 z-10'></div>
-
+    <section className='grid grid-cols-1 md:grid-cols-3 gap-10 w-full h-dvh items-start bg-bg'>
+      <div className='relative w-full h-full hidden md:block'>
+        <div className='absolute top-0 bottom-0 w-full h-full bg-black/40 z-10'></div>
         <Image
           alt='people'
           src='/people4.jpg'
@@ -59,11 +57,12 @@ const SignUp = () => {
           sizes='100vw'
           className='object-cover'
         />
-      </section>
-      <section className='w-full h-full max-w-lg px-10 pt-10'>
+      </div>
+
+      <div className='w-full max-w-lg px-10 pt-10'>
         <form onSubmit={handleSubmit}>
-          <h3 className='font-mono capitalize font-semibold text-4xl text-center mb-10 text-pink-700'>
-            Welcome to the Tea Spot
+          <h3 className='font-dancing-script capitalize font-semibold text-4xl text-center mb-10 text-purple-900'>
+            Welcome back, bestie 💖 The tea’s still hot!
           </h3>
 
           <CustomInput
@@ -87,10 +86,6 @@ const SignUp = () => {
             setShowPassword={setShowPassword}
           />
 
-          {errorMessage && (
-            <p className='text-red-500 text-sm mt-2'>{errorMessage}</p>
-          )}
-
           <p className='text-xs text-end text-gray-600'>Forgot password?</p>
 
           <CustomButton
@@ -98,20 +93,20 @@ const SignUp = () => {
             text='Sign In'
             handleClick={() => {}}
             btnType='submit'
-            styles='w-full mt-5 rounded-md bg-pink-700 text-white'
+            styles='w-full mt-5 rounded-md bg-purple-900 text-white'
           />
         </form>
 
         <p className='text-center text-sm mt-6'>
           Don't have an account?{" "}
-          <Link href='/sign-up' className='text-pink-700'>
+          <Link href='/sign-up' className='text-purple-900 font-semibold'>
             Sign Up
           </Link>
         </p>
-      </section>
-      <section className='relative w-full h-full md:block hidden'>
-        <div className='absolute top-0 bottom-o w-full h-full bg-black/40 z-10'></div>
+      </div>
 
+      <div className='relative w-full h-full hidden md:block'>
+        <div className='absolute top-0 bottom-0 w-full h-full bg-black/40 z-10'></div>
         <Image
           alt='people'
           src='/people3.jpg'
@@ -119,9 +114,9 @@ const SignUp = () => {
           sizes='100vw'
           className='object-cover'
         />
-      </section>
+      </div>
     </section>
   );
 };
 
-export default SignUp;
+export default SignIn;

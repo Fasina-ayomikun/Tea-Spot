@@ -1,63 +1,67 @@
 "use client";
 
-import Image from "next/image";
-import PostCard from "@/components/PostCard";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import Navbar from "@/components/Navbar";
+import CreatePost from "@/components/CreatePost";
+import PostCard from "@/components/PostCard";
+import MiniLoader from "@/components/MiniLoader";
+import useFetchPosts from "@/hooks/useFetchPosts";
 
 export default function Home() {
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [postToEdit, setPostToEdit] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [currentUser, setCurrentUser] = useState({ _id: "", username: "" });
+  const [token, setToken] = useState("");
 
-  const fetchPosts = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/posts");
-      const data = await response.json();
-      console.log(data);
+  const router = useRouter();
+  const { fetchPosts, posts, isLoading } = useFetchPosts();
 
-      setPosts(data.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  useEffect(() => {
+    const user = localStorage.getItem("TEA_USER");
+    const token = localStorage.getItem("TEA_TOKEN");
+
+    if (user) setCurrentUser(JSON.parse(user));
+    if (token) setToken(JSON.parse(token));
+  }, []);
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
   return (
-    <section className=''>
-      <div className='col-span-6 mx-auto px-10 sm:px-20 lg:px-3 w-full'>
-        <section className='flex items-center gap-5 px-5 box_shadow2 w-full mx-auto my-10 py-2 bg-white'>
-          <div className='bg-transparent h-12 border-gray-300 rounded-full w-full flex justify-between px-3 my-4 border-[1px] relative'>
-            <input
-              type='text'
-              className='text-sm w-full focus:outline-none h-full border-0 px-3 py-1 bg-transparent'
-              placeholder='Share your thoughts...'
-            />
-          </div>
-        </section>
+    <section className='relative'>
+      <Navbar token={token} />
+      <main className='mx-auto max-w-3xl w-full px-5'>
+        <CreatePost
+          fetchPosts={fetchPosts}
+          token={token}
+          currentUser={currentUser}
+        />
 
-        <section>
-          {posts?.length < 1 ? (
-            <p className='font-medium text-xl text-center mt-10'>No post</p>
-          ) : (
-            posts?.map((post, index) => (
+        {isLoading ? (
+          <div className='flex justify-center mt-10'>
+            <MiniLoader />
+          </div>
+        ) : posts?.length < 1 ? (
+          <p className='font-medium text-center text-lg mt-10 text-gray-600'>
+            No tea here yet... Be the first to spill ☕
+          </p>
+        ) : (
+          <div className='space-y-6 mt-6'>
+            {posts.map((post) => (
               <PostCard
-                key={index}
+                key={post._id}
                 post={post}
                 fetchPosts={fetchPosts}
                 setOpenModal={setOpenModal}
+                currentUser={currentUser}
+                token={token}
               />
-            ))
-          )}
-        </section>
-      </div>
+            ))}
+          </div>
+        )}
+      </main>
     </section>
   );
 }

@@ -3,6 +3,12 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-primary: #C9184A;
+  --color-accent: #9333EA;
+  --color-bg: #F5F5F5;
+  --color-text: #121212;
+  --color-button: #FF8FAB;
+  --color-input-bg: #FFDEE9;
 }
 
 * {
@@ -17,11 +23,12 @@
   --font-dancing-script: var(--font-dancing-script), "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-montserrat: var(--font-geist-montserrat), "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-sora: var(--font-sora), "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --color-primary-accent: #d62246;
-  --color-secondary-accent: #e8e9eb;
-  --color-primary: #0a2342;
-  --color-secondary: #efb94c;
-  --color-tertiary: #ff6b35;
+  --color-primary-accent: var(--color-accent);
+  --color-bg: var(--color-bg);
+  --color-text: var(--color-text);
+  --color-button: var(--color-button);
+  --color-input-bg: var(--color-input-bg);
+  --color-primary: var(--color-primary);
   --shadow-main: 0px 0px 12px rgba(0, 0, 0, 0.2);
   --shadow-solid: 4px 4px 1px rgba(0, 0, 0, 1);
 }
@@ -31,4 +38,35 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* For webkit browsers */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-purple-700);
+
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-purple-400);
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-purple-700) transparent;
 }

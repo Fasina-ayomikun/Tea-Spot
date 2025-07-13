@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { dbConnect } from "@/lib/dbConnect";
@@ -7,7 +6,7 @@ import { NextResponse } from "next/server";
 
 const SECRET = process.env.JWT_SECRET as string;
 
-export const POST = async (req: Request, res: Response) => {
+export const POST = async (req: Request) => {
   const { username, password } = await req.json();
 
   try {
@@ -16,16 +15,37 @@ export const POST = async (req: Request, res: Response) => {
     const user = await User.findOne({ username });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return NextResponse.json("Invalid credentials", { status: 400 });
+      return NextResponse.json(
+        {
+          message:
+            "Uh-oh 😬 That username or password didn’t spill the right tea. Try again.",
+        },
+        { status: 400 }
+      );
     }
 
-    const token = jwt.sign({ userId: user._id }, SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ username, userId: user._id }, SECRET, {
+      expiresIn: "7d",
+    });
 
     return NextResponse.json(
-      { token, message: "New Day New Tea" },
+      {
+        token,
+        user: {
+          _id: user._id,
+          username: user.username,
+        },
+        message: "New day, new gist 🌞 Welcome back!",
+      },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json("Something went wrong", { status: 500 });
+    return NextResponse.json(
+      {
+        message:
+          "Our vibes are off right now 😵 Hang tight and try again soon.",
+      },
+      { status: 500 }
+    );
   }
 };
