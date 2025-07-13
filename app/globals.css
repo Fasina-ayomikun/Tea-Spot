@@ -5,19 +5,27 @@
   --foreground: #171717;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-poppins: var(--font-poppins), "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-dancing-script: var(--font-dancing-script), "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-montserrat: var(--font-geist-montserrat), "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sora: var(--font-sora), "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --color-primary-accent: #d62246;
+  --color-secondary-accent: #e8e9eb;
+  --color-primary: #0a2342;
+  --color-secondary: #efb94c;
+  --color-tertiary: #ff6b35;
+  --shadow-main: 0px 0px 12px rgba(0, 0, 0, 0.2);
+  --shadow-solid: 4px 4px 1px rgba(0, 0, 0, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 body {
   background: var(--background);
